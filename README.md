@@ -1,4 +1,4 @@
-# 🚀 Proyecto Integrador: UIDE Super App
+# 🚀 Proyecto Integrador
 
 ¡Bienvenidos al desafío!
 
@@ -93,7 +93,7 @@ El cierre del ciclo.
 **Clonar el proyecto:**
 ```bash
 git clone https://github.com/richardmijo/f_2526_prt_s7_2.git
-
+```
 ---
 
 ## 🤝 Política de Revisión Cruzada
