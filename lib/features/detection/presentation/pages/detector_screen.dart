@@ -47,14 +47,15 @@ class _DetectorScreenState extends State<DetectorScreen> {
       if (cameras.isEmpty) return;
 
       final camera = cameras.firstWhere(
-        (c) => c.lensDirection == CameraLensDirection.front,
+        (c) => c.lensDirection == _cameraLensDirection,
         orElse: () => cameras.first,
       );
       _cameraLensDirection = camera.lensDirection;
 
       _cameraController = CameraController(
         camera,
-        ResolutionPreset.medium,
+        ResolutionPreset
+            .low, // Changed to low to prevent freezing on low-end devices
         enableAudio: false,
         imageFormatGroup: Platform.isAndroid
             ? ImageFormatGroup.nv21
@@ -74,9 +75,15 @@ class _DetectorScreenState extends State<DetectorScreen> {
     }
   }
 
+  int _frameCounter = 0;
   void _processImage(CameraImage image) async {
+    // Throttling: only process 1 out of every 10 frames to unblock UI
+    _frameCounter++;
+    if (_frameCounter % 10 != 0) return;
+
     if (_isDetecting || !_isInitialized || _faceDetector == null) return;
     _isDetecting = true;
+    debugPrint("Processing frame $_frameCounter...");
 
     try {
       final inputImage = CameraUtils.convertCameraImageToInputImage(
@@ -102,6 +109,7 @@ class _DetectorScreenState extends State<DetectorScreen> {
       }
 
       final faces = await _faceDetector!.processImage(inputImage);
+      debugPrint("Faces detected: ${faces.length}");
 
       if (mounted) {
         setState(() {
@@ -143,8 +151,57 @@ class _DetectorScreenState extends State<DetectorScreen> {
                       cameraLensDirection: _cameraLensDirection,
                     ),
                   ),
+
+                Positioned(
+                  bottom: 20,
+                  left: 20,
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    color: Colors.black54,
+                    child: Text(
+                      'Rostros: ${_faces.length}',
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                ),
               ],
             ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _toggleCamera,
+        child: const Icon(Icons.cameraswitch),
+      ),
     );
+  }
+
+  Future<void> _toggleCamera() async {
+    if (_cameraController == null) return;
+
+    // 1. Stop processing to avoid errors
+    _isDetecting = false;
+    _faceDetector?.close(); // Reset detector to avoid conflicts
+    _faceDetector = FaceDetector(
+      options: FaceDetectorOptions(
+        enableContours: false,
+        enableLandmarks: false,
+      ),
+    );
+
+    // 2. Dispose current controller
+    await _cameraController!.dispose();
+
+    // 3. Update state to switch lens
+    if (mounted) {
+      setState(() {
+        _isInitialized = false;
+        _faces = [];
+        _imageSize = null;
+        _cameraLensDirection = _cameraLensDirection == CameraLensDirection.front
+            ? CameraLensDirection.back
+            : CameraLensDirection.front;
+      });
+    }
+
+    // 4. Re-initialize
+    _initializeCamera();
   }
 }
