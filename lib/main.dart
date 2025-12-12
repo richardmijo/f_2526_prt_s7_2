@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'features/detection/presentation/pages/detector_screen.dart' as detector;
 
 void main() {
   runApp(const MyApp());
@@ -108,6 +109,18 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const detector.DetectorScreen(),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.face),
+              label: const Text('Ir a Detector de Rostros (Grupo 6)'),
             ),
           ],
         ),
