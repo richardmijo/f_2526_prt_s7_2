@@ -1,5 +1,302 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';  // Del Grupo 4
 
+// Clase AppRoutes (del archivo /lib/routes/app_routes.dart que proporcionaste)
+class AppRoutes {
+  static const String home = 'home';
+  static const String details = 'details';
+  static const String settings = 'settings';
+  // mas variables (puedes agregar más const aquí)
+
+  // Método getRoutes adaptado para generar GoRoutes dinámicamente
+  static List<GoRoute> getGoRoutes() {
+    return [
+      GoRoute(
+        path: '/$home',  // Path basado en el name
+        name: home,
+        builder: (context, state) => const HomeScreen(),  // Instanciar el widget
+      ),
+      GoRoute(
+        path: '/$details',
+        name: details,
+        builder: (context, state) => const DetailsScreen(),
+      ),
+      GoRoute(
+        path: '/$settings',
+        name: settings,
+        builder: (context, state) => const SettingsScreen(),
+      ),
+      // Agrega más GoRoutes aquí para "mas variables"
+    ];
+  }
+}
+
+// Definición de rutas nombradas (del aporte de noticias, renombrada para evitar conflicto)
+class AppRoutesNoticias {
+  static const String noticias = '/noticias';
+}
+
+// Importa las pantallas de los otros grupos (ajusta rutas reales).
+import 'grupo1/grupo1_screen.dart';  // Placeholder para Grupo 1
+import 'grupo2/grupo2_screen.dart';  // Placeholder para Grupo 2
+import 'grupo4/settings_page.dart';  // Del Grupo 4
+import 'grupo5/grupo5_screen.dart';
+import 'grupo6/grupo6_screen.dart';
+import 'grupo7/grupo7_screen.dart';
+import 'grupo9/grupo9_screen.dart';  // Placeholder para Grupo 9
+import 'grupo10/grupo10_screen.dart';
+
+// Importación para Visor3D del Grupo 8
+import 'package:f_2526_prt_s7_2/features/visor.dart';
+
+// Importación para NoticiasScreen (del aporte anterior)
+import 'features/noticias_screen.dart';  // Asumido path; cambia si es necesario
+
+// Importación para TextRecognitionScreen (del aporte anterior)
+import 'features/text_recognition/presentation/text_recognition_screen.dart';  // Ajusta si el archivo es diferente
+
+// Nuevos imports para las pantallas de AppRoutes (del nuevo aporte)
+import 'package:flutter_rutas/screens/home_screen.dart';
+import 'package:flutter_rutas/screens/details_screen.dart';
+import 'package:flutter_rutas/screens/settings_screen.dart';
+
+// Nueva importación para DetectorScreen (del último aporte)
+import 'features/detection/presentation/pages/detector_screen.dart' as detector;  // Con alias como indicas
+
+// Importación del Grupo 4 para el proveedor de tema
+import 'providers/theme_provider.dart';  // Ajusta la ruta si está en grupo4/providers/
+
+// Pantalla principal del Grupo 3: El menú de navegación
+class NavegacionCentralScreen extends StatelessWidget {
+  const NavegacionCentralScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Navegación Central - Grupo 3'),
+        backgroundColor: Colors.blue,  // Se adaptará al tema dinámico
+      ),
+      drawer: const MenuDrawer(),  // El menú lateral con enlaces
+      body: const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.dashboard, size: 100, color: Colors.blue),
+            SizedBox(height: 20),
+            Text(
+              'Bienvenido al Núcleo del Proyecto',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Usa el menú lateral para navegar a otros grupos.',
+              style: TextStyle(fontSize: 16),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Drawer con botones/enlaces a las pantallas de otros grupos
+class MenuDrawer extends StatelessWidget {
+  const MenuDrawer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+            ),
+            child: Text(
+              'Menú Principal - Grupo 3',
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+          // Botones para rutas básicas de AppRoutes
+          ListTile(
+            leading: const Icon(Icons.home),
+            title: const Text('Home'),
+            onTap: () => context.goNamed(AppRoutes.home),  // Navegación por nombre
+          ),
+          ListTile(
+            leading: const Icon(Icons.info),
+            title: const Text('Details'),
+            onTap: () => context.goNamed(AppRoutes.details),
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Settings (Básico)'),
+            onTap: () => context.goNamed(AppRoutes.settings),
+          ),
+          // Botón para Grupo 1
+          ListTile(
+            leading: const Icon(Icons.group),
+            title: const Text('Grupo 1'),
+            onTap: () => context.go('/grupo1'),
+          ),
+          // Botón para Grupo 2
+          ListTile(
+            leading: const Icon(Icons.group),
+            title: const Text('Grupo 2'),
+            onTap: () => context.go('/grupo2'),
+          ),
+          // Tu propio grupo (inicio)
+          ListTile(
+            leading: const Icon(Icons.dashboard),
+            title: const Text('Grupo 3 - Navegación'),
+            onTap: () => context.go('/'),
+          ),
+          // Botón para Grupo 4 (Ajustes)
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Grupo 4 - Ajustes'),
+            onTap: () => context.go('/ajustes'),
+          ),
+          // Botones para los otros grupos...
+          ListTile(
+            leading: const Icon(Icons.group),
+            title: const Text('Grupo 5'),
+            onTap: () => context.go('/grupo5'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.group),
+            title: const Text('Grupo 6'),
+            onTap: () => context.go('/grupo6'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.group),
+            title: const Text('Grupo 7'),
+            onTap: () => context.go('/grupo7'),
+          ),
+          // ListTile para Noticias
+          ListTile(
+            leading: const Icon(Icons.newspaper),
+            title: const Text('Noticias'),
+            onTap: () => context.go(AppRoutesNoticias.noticias),
+          ),
+          // ListTile para Reconocimiento de Texto
+          ListTile(
+            leading: const Icon(Icons.camera_alt),
+            title: const Text('Reconocimiento de Texto'),
+            onTap: () => context.go('/text_recognition'),
+          ),
+          // Nuevo ListTile para DetectorScreen
+          ListTile(
+            leading: const Icon(Icons.search),  // Ícono sugerido para detección
+            title: const Text('Detector Screen'),
+            onTap: () => context.go('/detectorScreen'),  // Navegación a la nueva ruta
+          ),
+          // ListTile para Grupo 8 (Visor 3D)
+          ListTile(
+            leading: Icon(Icons.threed_rotation),
+            title: const Text("Visor 3D (Grupo 8)"),
+            onTap: () {
+              context.go('/visor3d');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.group),
+            title: const Text('Grupo 9'),
+            onTap: () => context.go('/grupo9'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.group),
+            title: const Text('Grupo 10'),
+            onTap: () => context.go('/grupo10'),
+          ),
+          // Opción para cerrar el drawer
+          ListTile(
+            leading: const Icon(Icons.close),
+            title: const Text('Cerrar'),
+            onTap: () => Navigator.pop(context),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Configuración de GoRouter (appRouter)
+final GoRouter appRouter = GoRouter(
+  initialLocation: AppRoutes.home,  // Inicia en /home (de AppRoutes)
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const NavegacionCentralScreen(),
+    ),
+    // Rutas dinámicas de AppRoutes (integradas via getGoRoutes())
+    ...AppRoutes.getGoRoutes(),  // Agrega las nuevas rutas automáticamente
+    // Rutas para los otros grupos (placeholders)
+    GoRoute(
+      path: '/grupo1',
+      builder: (context, state) => const Grupo1Screen(),
+    ),
+    GoRoute(
+      path: '/grupo2',
+      builder: (context, state) => const Grupo2Screen(),
+    ),
+    // Ruta del Grupo 4
+    GoRoute(
+      path: '/ajustes',
+      name: 'ajustes',
+      builder: (context, state) => const SettingsPage(),
+    ),
+    GoRoute(
+      path: '/grupo5',
+      builder: (context, state) => const Grupo5Screen(),
+    ),
+    GoRoute(
+      path: '/grupo6',
+      builder: (context, state) => const Grupo6Screen(),
+    ),
+    GoRoute(
+      path: '/grupo7',
+      builder: (context, state) => const Grupo7Screen(),
+    ),
+    // Ruta para Noticias
+    GoRoute(
+      path: AppRoutesNoticias.noticias,
+      name: 'noticias',
+      builder: (context, state) => const NoticiasScreen(),
+    ),
+    // Ruta para TextRecognitionScreen
+    GoRoute(
+      path: '/text_recognition',
+      name: 'text_recognition',
+      builder: (context, state) => const TextRecognitionScreen(),
+    ),
+    // Nueva ruta para DetectorScreen
+    GoRoute(
+      path: '/detectorScreen',
+      name: 'detectorScreen',
+      builder: (context, state) => detector.DetectorScreen(),  // Usa el alias del import
+    ),
+    // Ruta del Grupo 8
+    GoRoute(
+      path: '/visor3d',
+      name: 'visor3d',
+      builder: (context, state) => const Visor3D(),
+    ),
+    GoRoute(
+      path: '/grupo9',
+      builder: (context, state) => const Grupo9Screen(),
+    ),
+    GoRoute(
+      path: '/grupo10',
+      builder: (context, state) => const Grupo10Screen(),
+    ),
+  ],
+);
+
+// Función main con Provider del Grupo 4
 void main() {
   runApp(const MyApp());
 }
@@ -7,116 +304,23 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    // Estructura con ChangeNotifierProvider y Consumer<ThemeProvider>
+    return ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData.light(),
+            darkTheme: ThemeData.dark(),
+            themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            title: 'Proyecto Grupos - Navegación Central',
+            routerConfig: appRouter,
+          );
+        },
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
