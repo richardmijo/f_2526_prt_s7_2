@@ -1,0 +1,25 @@
+name: login_demo
+description: A demo app with login using dotenv and SharedPreferences.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  flutter: { sdk: flutter }
+  flutter_dotenv: ^5.1.0
+  shared_preferences: ^2.2.3
+
+  # Material Icons, etc.
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - .env.example
